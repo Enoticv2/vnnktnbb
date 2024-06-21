@@ -1,5 +1,16 @@
 Telegram.WebApp.ready(); // Сообщить Telegram, что ваше приложение загружено и готово
 
+const initData = Telegram.WebApp.initData || '';
+const initDataUnsafe = Telegram.WebApp.initDataUnsafe || {};
+
+// Получаем данные пользователя
+const user = initDataUnsafe.user;
+if (user) {
+    console.log(`Logged in as ${user.first_name} ${user.last_name}`);
+} else {
+    console.log("User not authenticated");
+}
+
         let balance = 0;
         let energy = 1000;
         let maxEnergy = 1000;
