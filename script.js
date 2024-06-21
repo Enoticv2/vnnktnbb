@@ -115,10 +115,10 @@ if (user) {
 
         setInterval(() => {
             if (energy < maxEnergy) {
-                energy = Math.min(energy + 3, maxEnergy);
+                energy = Math.min(energy + 1, maxEnergy);
                 updateEnergyBar();
             }
-        }, 100);
+        }, 3000);
 
         boostsButton.addEventListener('click', () => {
             boostsMenu.style.display = 'flex';
