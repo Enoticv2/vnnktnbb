@@ -6,7 +6,10 @@ body {
     height: 100vh;
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: white;
+    background-image: url('backgroungwhite.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 #content {
     display: flex;
