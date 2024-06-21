@@ -118,7 +118,7 @@ if (user) {
                 energy = Math.min(energy + 3, maxEnergy);
                 updateEnergyBar();
             }
-        }, 10000);
+        }, 100);
 
         boostsButton.addEventListener('click', () => {
             boostsMenu.style.display = 'flex';

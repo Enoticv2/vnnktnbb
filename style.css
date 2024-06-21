@@ -1,152 +1,256 @@
-/* General styles */
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     height: 100vh;
-    background-color: #f0f0f0;
-    -webkit-user-select: none; /* Safari */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none; /* Non-prefixed version, currently supported by Chrome, Opera, and Edge */
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-image: url('img/backgroungwhite.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
-
-/* Prevent text selection on all elements */
-* {
-    -webkit-user-select: none; /* Safari */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none; /* Non-prefixed version, currently supported by Chrome, Opera, and Edge */
-}
-
-/* Also prevent dragging images */
-img {
-    -webkit-user-drag: none; /* Prevent images from being dragged in Safari */
-    user-drag: none; /* Prevent images from being dragged in other browsers that support this property */
-}
-
-/* Content styles */
 #content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
+    flex-grow: 1;
+    padding-bottom: 100px; /* Отступ для меню */
 }
-
 .page {
     display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
 }
-
 .page.active {
-    display: block;
+    display: flex;
 }
-
-/* Clicker page styles */
 #balance {
     font-size: 2em;
-    text-align: center;
-    margin: 20px 0;
+    margin-bottom: 20px;
 }
-
 #clicker {
-    width: 100px;
-    height: 100px;
+    width: 200px;
+    height: 200px;
     cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    border-radius: 100px;
 }
-
-#new-icon {
-    width: 100px;
-    height: 100px;
+#clicker:active {
+    transform: scale(1.05);
 }
-
 #energy-container {
     width: 80%;
-    height: 20px;
-    background-color: #ddd;
-    border-radius: 10px;
-    margin: 20px auto;
+    max-width: 300px;
+    height: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    margin-top: 10px;
 }
-
 #energy-bar {
+    width: 100%;
     height: 100%;
-    background-color: #76c7c0;
-    border-radius: 10px;
-    width: 100%;
+    background-color: #4CAF50;
+    border-radius: 5px;
+    transition: width 0.2s ease-in-out;
 }
-
 #energy-text {
-    text-align: center;
-    margin-top: 10px;
-}
-
-.boosts-button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    margin: 20px 0;
-    background-color: #76c7c0;
-    border: none;
-    border-radius: 5px;
-    color: white;
     font-size: 1em;
+    margin-top: 5px;
+}
+#refill-button {
+    margin-left: 10px;
+    width: 150px;
+    height: 150px;
+    cursor: pointer;
+    transition: opacity 0.2s ease-in-out;
+}
+#refill-button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+#menu {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 80px;
+    background-color: #f0f0f0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+}
+.menu-icon {
+    width: 70px;
+    height: 70px;
     cursor: pointer;
 }
-
-/* Friends page styles */
 .card {
-    background-color: white;
+    width: 90%;
     padding: 20px;
-    margin: 10px 0;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    text-align: center;
+    margin: 10px;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
-
 .invite-button {
-    background-color: #76c7c0;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
     border: none;
     border-radius: 5px;
-    color: white;
+    cursor: pointer;
+}
+.invite-button:hover {
+    background-color: #45a049;
+}
+.coming-soon {
+    font-size: 2em;
+    color: #555;
+}
+#upgrade-container {
+    width: 80%;
+    max-width: 300px;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.upgrade-button {
     padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
     margin-top: 10px;
 }
-
-/* Bets page styles */
-.container {
-    padding: 20px;
+.upgrade-button:hover {
+    background-color: #45a049;
+}
+.upgrade-cost {
+    font-size: 1em;
+}
+/* Boosts Button */
+.boosts-button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 100px;
 }
 
-.events {
-    background-color: white;
+.boosts-button:hover {
+    background-color: #45a049;
+}
+
+/* Boosts Menu */
+.boosts-menu {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.boosts-menu-content {
+    background-color: #fff;
     padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.boosts-menu-content img {
+    margin-bottom: 10px;
+}
+
+.boosts-menu-content .upgrade-button {
+    margin-top: 10px;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    display: flex;
+}
+    
+    nav ul li {
+    margin: 0 15px;
+}
+    
+    nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+.events {
+    margin: 20px 0;
+}
+
+.events h2 {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 .positions {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
-.position {
+.forwards, .defenders, .goalies {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.forwards .position,
+.defenders .position,
+.goalies .position {
     text-align: center;
     margin: 10px;
 }
 
-.position img {
-    width: 100px;
-    height: 100px;
+.forwards .position img,
+.defenders .position img,
+.goalies .position img {
+    width: 80px;
 }
 
 .modal {
     display: none;
     position: fixed;
     z-index: 1;
+    padding-top: 60px;
     left: 0;
     top: 0;
     width: 100%;
@@ -157,13 +261,11 @@ img {
 }
 
 .modal-content {
-    background-color: white;
-    margin: 15% auto;
+    background-color: #fefefe;
+    margin: 5% auto;
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
-    max-width: 400px;
-    border-radius: 5px;
 }
 
 .close {
@@ -180,71 +282,24 @@ img {
     cursor: pointer;
 }
 
-/* Bonuses page styles */
-.coming-soon {
+.player-card {
+    display: inline-block;
     text-align: center;
-    font-size: 2em;
-    margin: 20px 0;
-}
-
-/* Menu styles */
-#menu {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-    background-color: #333;
-    position: fixed;
-    bottom: 0;
-}
-
-.menu-icon {
-    width: 50px;
-    height: 50px;
-    padding: 10px;
+    margin: 10px;
     cursor: pointer;
 }
 
-/* Boosts menu styles */
-.boosts-menu {
-    display: none;
-    position: fixed;
-    z-index: 2;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5);
-    align-items: center;
-    justify-content: center;
+.player-card img {
+    width: 80px;
+    height: 80px;
 }
 
-.boosts-menu-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    width: 80%;
-    max-width: 400px;
-    text-align: center;
+.player-card p {
+    margin: 5px 0 0 0;
 }
 
-#refill-button {
-    width: 100px;
-    height: 100px;
-    cursor: pointer;
+img {
+    user-select: none;
+    -webkit-user-drag: none;
 }
 
-.upgrade-cost {
-    display: block;
-    margin: 10px 0;
-}
-
-.upgrade-button {
-    background-color: #76c7c0;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    padding: 10px 20px;
-    cursor: pointer;
-    margin-top: 10px;
-}
