@@ -11,6 +11,7 @@ if (user) {
     console.log("User not authenticated");
 }
 
+
 let balance = 0;
 let energy = 100;
 let maxEnergy = 100;
