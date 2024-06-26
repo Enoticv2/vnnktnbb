@@ -8,7 +8,7 @@ const token = '7138156661:AAFoF_TnYibNtPJ8Aot_2JDfO4Ja2w0B-Lo';
 const bot = new TelegramBot(token, { polling: true });
 
 // Подключение к базе данных MongoDB
-mongoose.connect('mongodb+srv://ilyade3004:3004@cluster0.qitroet.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb+srv://ilyade3004:3004@cluster0.qitroet.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Could not connect to MongoDB', err));
 
@@ -24,7 +24,7 @@ const User = mongoose.model('User', userSchema);
 
 // Создание экземпляра Express
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001; // Измените порт на 3001 или другой доступный порт
 
 app.use(bodyParser.json());
 
@@ -51,14 +51,39 @@ app.post('/webhook', async (req, res) => {
 app.post('/update', async (req, res) => {
   const { user_id, balance, energy, event } = req.body;
 
+  console.log(`Received update request for user ${user_id} with balance ${balance} and energy ${energy}, event: ${event}`);
+
   try {
     const user = await User.findOneAndUpdate(
       { user_id: user_id },
       { $set: { balance: balance, energy: energy }, $push: { events: event } },
       { new: true, upsert: true }
     );
+    console.log(`User ${user_id} updated successfully.`);
     res.json({ success: true, message: 'User data updated', user: user });
   } catch (err) {
+    console.error('Error updating user data:', err.message);
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Новый обработчик для получения данных пользователя
+app.get('/user', async (req, res) => {
+  const { user_id } = req.query;
+
+  console.log(`Fetching user data for ${user_id}`);
+
+  try {
+    const user = await User.findOne({ user_id: user_id });
+    if (user) {
+      console.log(`User data for ${user_id} found: balance=${user.balance}, energy=${user.energy}`);
+      res.json({ success: true, user: user });
+    } else {
+      console.log(`User data for ${user_id} not found`);
+      res.json({ success: false, message: 'User not found' });
+    }
+  } catch (err) {
+    console.error('Error fetching user data:', err.message);
     res.status(500).json({ success: false, message: err.message });
   }
 });
@@ -97,25 +122,49 @@ bot.onText(/\/start/, (msg) => {
   // Добавляем пользователя в базу данных
   addUserOrUpdate(userId, 'Started the bot');
 
-  bot.sendMessage(chatId, 'Я ваш бот.');
+  const menu = {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: 'Играть', callback_data: 'play' }],
+        [{ text: 'Баланс', callback_data: 'balance' }, { text: 'Энергия', callback_data: 'energy' }]
+      ]
+    }
+  };
+
+  bot.sendMessage(chatId, 'Привет! Я ваш бот. Выберите команду из меню.', menu);
+});
+
+// Обработчик callback данных из встроенной клавиатуры
+bot.on('callback_query', async (callbackQuery) => {
+  const message = callbackQuery.message;
+  const chatId = message.chat.id;
+  const userId = callbackQuery.from.id;
+  const data = callbackQuery.data;
+
+  if (data === 'play') {
+    const playUrl = 'https://t.me/FanHockeyBot/FanHockey';
+    bot.sendMessage(chatId, `Играть можно по следующей ссылке: ${playUrl}`);
+  } else if (data === 'balance') {
+    const user = await User.findOne({ user_id: userId });
+    if (user) {
+      bot.sendMessage(chatId, `Ваш текущий баланс: ${user.balance}`);
+    } else {
+      bot.sendMessage(chatId, 'Ваш аккаунт не найден.');
+    }
+  } else if (data === 'energy') {
+    const user = await User.findOne({ user_id: userId });
+    if (user) {
+      bot.sendMessage(chatId, `Ваш текущий уровень энергии: ${user.energy}`);
+    } else {
+      bot.sendMessage(chatId, 'Ваш аккаунт не найден.');
+    }
+  }
 });
 
 // Обработчик команды /help
 bot.onText(/\/help/, (msg) => {
   const chatId = msg.chat.id;
-  bot.sendMessage(chatId, 'Список команд:\n/start - Начало\n/help - Помощь\n/play - Играть');
-});
-
-// Обработчик команды /play
-bot.onText(/\/play/, (msg) => {
-  const chatId = msg.chat.id;
-  const userId = msg.from.id;
-
-  // Добавляем пользователя в базу данных
-  addUserOrUpdate(userId, 'Started playing');
-
-  const playUrl = ' t.me/FanHockeyBot/FanHockey';
-  bot.sendMessage(chatId, `Играть можно по следующей ссылке: ${playUrl}`);
+  bot.sendMessage(chatId, 'Список команд:\n/start - Начало\n/help - Помощь\n/play - Играть\n/balance - Проверить баланс\n/energy - Проверить энергию');
 });
 
 // Обработчик текстовых сообщений (эхо)

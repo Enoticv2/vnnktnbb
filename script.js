@@ -3,13 +3,14 @@ Telegram.WebApp.ready(); // Сообщить Telegram, что ваше прил�
 const initData = Telegram.WebApp.initData || '';
 const initDataUnsafe = Telegram.WebApp.initDataUnsafe || {};
 
-// Получаем данные пользователя
-const user = initDataUnsafe.user;
-if (user) {
-    console.log(`Logged in as ${user.first_name} ${user.last_name}`);
+// Проверка, что данные пользователя доступны
+if (initDataUnsafe.user) {
+    console.log(`Logged in as ${initDataUnsafe.user.first_name} ${initDataUnsafe.user.last_name}, user ID: ${initDataUnsafe.user.id}`);
 } else {
-    console.log("User not authenticated");
+    console.error("User not authenticated");
 }
+
+const user = initDataUnsafe.user || { id: null };
 
 let balance = 0;
 let energy = 100;
@@ -33,6 +34,36 @@ let profitPerClick = 1;
 let profitUpgradeLevel = 1;
 let profitUpgradeCost = 100;
 let energyUpgradeCost = 100;
+
+function loadUserData() {
+    if (!user || !user.id) {
+        console.error('User ID is not available');
+        return;
+    }
+
+    console.log(`Fetching user data for user ID: ${user.id}`);
+    fetch(`https://9cf7-83-40-74-107.ngrok-free.app/user?user_id=${user.id}`)
+        .then(response => {
+            console.log('Response received');
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                balance = data.user.balance;
+                energy = data.user.energy;
+                console.log(`Loaded user data: balance=${balance}, energy=${energy}`);
+                updateDisplay();
+            } else {
+                console.error('Failed to load user data:', data.message);
+            }
+        })
+        .catch(error => console.error('Error fetching user data:', error));
+}
+
+function updateDisplay() {
+    balanceDisplay.textContent = balance;
+    updateEnergyBar();
+}
 
 function updateEnergyBar() {
     energyBar.style.width = (energy / maxEnergy) * 100 + '%';
@@ -67,8 +98,7 @@ clicker.addEventListener('click', () => {
     if (energy >= profitPerClick) {
         balance += profitPerClick;
         energy -= profitPerClick;
-        balanceDisplay.textContent = balance;
-        updateEnergyBar();
+        updateDisplay();
         sendUpdate('click');
     } else {
         balance += 0;
@@ -81,7 +111,7 @@ upgradeProfitButton.addEventListener('click', () => {
         profitPerClick++;
         profitUpgradeLevel++;
         profitUpgradeCost *= 5;
-        balanceDisplay.textContent = balance;
+        updateDisplay();
         profitUpgradeCostDisplay.textContent = `Cost: ${profitUpgradeCost}`;
         if (profitUpgradeLevel >= 3) {
             clicker.src = newIcon.src;
@@ -97,7 +127,7 @@ upgradeEnergyButton.addEventListener('click', () => {
         balance -= energyUpgradeCost;
         maxEnergy += 500;
         energyUpgradeCost *= 5;
-        balanceDisplay.textContent = balance;
+        updateDisplay();
         energyUpgradeCostDisplay.textContent = `Cost: ${energyUpgradeCost}`;
         updateEnergyBar();
         sendUpdate('upgradeEnergy');
@@ -134,10 +164,12 @@ boostsMenu.addEventListener('click', (event) => {
     }
 });
 
-updateEnergyBar();
-updateRefillButton();
-
 function sendUpdate(event) {
+    if (!user || !user.id) {
+        console.error('User ID is not available');
+        return;
+    }
+
     const data = {
         user_id: user.id,
         balance: balance,
@@ -145,17 +177,25 @@ function sendUpdate(event) {
         event: event
     };
 
-    fetch(' t.me/FanHockeyBot/FanHockey', {
+    console.log(`Sending update for user ${user.id}: balance=${balance}, energy=${energy}, event=${event}`);
+    fetch('https://9cf7-83-40-74-107.ngrok-free.app/update', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
-    }).then(response => response.json())
+    }).then(response => {
+        console.log('Update response received');
+        return response.json();
+    })
       .then(data => {
-        console.log('Success:', data);
+        console.log('Update response:', data);
       })
       .catch((error) => {
-        console.error('Error:', error);
+        console.error('Error sending update:', error);
       });
 }
+
+loadUserData();
+updateEnergyBar();
+updateRefillButton();
