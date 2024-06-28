@@ -35,7 +35,7 @@ function enterApplication() {
         return;
     }
 
-    fetch('https://9cf7-83-40-74-107.ngrok-free.app/enter', {
+    fetch('https://836c-2a02-9130-8522-b09e-cf2-9ad6-283b-2737.ngrok-free.app/enter', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -60,7 +60,7 @@ function loadUserData() {
 
     console.log(`Fetching user data for user ID: ${user.id}`);
 
-    fetch(`https://9cf7-83-40-74-107.ngrok-free.app/user?user_id=${user.id}`)
+    fetch(`https://836c-2a02-9130-8522-b09e-cf2-9ad6-283b-2737.ngrok-free.app/user?user_id=${user.id}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {

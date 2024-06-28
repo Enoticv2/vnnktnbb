@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const TelegramBot = require('node-telegram-bot-api');
 
 const token = '7138156661:AAFoF_TnYibNtPJ8Aot_2JDfO4Ja2w0B-Lo';
-const bot = new TelegramBot(token, { polling: true });
+const bot = new TelegramBot(token);
 
 mongoose.connect('mongodb+srv://ilyade3004:3004@cluster0.qitroet.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
   .then(() => console.log('Connected to MongoDB'))
@@ -20,9 +20,14 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3004;
 
 app.use(bodyParser.json());
+
+app.post('/webhook', (req, res) => {
+  bot.processUpdate(req.body);
+  res.sendStatus(200);
+});
 
 app.post('/enter', async (req, res) => {
   const { user_id } = req.body;
@@ -120,7 +125,7 @@ bot.onText(/\/start/, (msg) => {
     }
   };
 
-  bot.sendMessage(chatId, 'Привет! Я ваш бот. Выберите команду из меню.', menu);
+  bot.sendMessage(chatId, 'Hi! choose a command!', menu);
 });
 
 bot.on('callback_query', async (callbackQuery) => {
@@ -131,18 +136,18 @@ bot.on('callback_query', async (callbackQuery) => {
 
   if (data === 'play') {
     const playUrl = 'https://t.me/FanHockeyBot/FanHockey';
-    bot.sendMessage(chatId, `Играть можно по следующей ссылке: ${playUrl}`);
+    bot.sendMessage(chatId, `To play click the following link: ${playUrl}`);
   } else if (data === 'balance') {
     const user = await User.findOne({ user_id: userId });
     if (user) {
-      bot.sendMessage(chatId, `Ваш текущий баланс: ${user.balance}`);
+      bot.sendMessage(chatId, `Your balance: ${user.balance}`);
     } else {
       bot.sendMessage(chatId, 'Ваш аккаунт не найден.');
     }
   } else if (data === 'energy') {
     const user = await User.findOne({ user_id: userId });
     if (user) {
-      bot.sendMessage(chatId, `Ваш текущий уровень энергии: ${user.energy}`);
+      bot.sendMessage(chatId, `Your energy: ${user.energy}`);
     } else {
       bot.sendMessage(chatId, 'Ваш аккаунт не найден.');
     }
