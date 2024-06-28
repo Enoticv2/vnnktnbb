@@ -1,21 +1,15 @@
-Telegram.WebApp.ready(); // Сообщить Telegram, что ваше приложение загружено и готово
+Telegram.WebApp.ready();
 
-const initData = Telegram.WebApp.initData || '';
 const initDataUnsafe = Telegram.WebApp.initDataUnsafe || {};
-
-// Проверка, что данные пользователя доступны
-if (initDataUnsafe.user) {
-    console.log(`Logged in as ${initDataUnsafe.user.first_name} ${initDataUnsafe.user.last_name}, user ID: ${initDataUnsafe.user.id}`);
-} else {
-    console.error("User not authenticated");
-}
-
 const user = initDataUnsafe.user || { id: null };
+
+console.log("User data:", user);
 
 let balance = 0;
 let energy = 100;
 let maxEnergy = 100;
-const refillCooldown = 3 * 60 * 60 * 1000; // 3 часа в миллисекундах
+const refillCooldown = 3 * 60 * 60 * 1000;
+
 const balanceDisplay = document.getElementById('balance');
 const clicker = document.getElementById('clicker');
 const newIcon = document.getElementById('new-icon');
@@ -35,6 +29,29 @@ let profitUpgradeLevel = 1;
 let profitUpgradeCost = 100;
 let energyUpgradeCost = 100;
 
+function enterApplication() {
+    if (!user || !user.id) {
+        console.error('User ID is not available');
+        return;
+    }
+
+    fetch('https://9cf7-83-40-74-107.ngrok-free.app/enter', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ user_id: user.id })
+    }).then(response => response.json())
+      .then(data => {
+        if (data.success) {
+            console.log(`User ${user.id} entered the application`);
+        } else {
+            console.error('Failed to record user entry:', data.message);
+        }
+    })
+    .catch(error => console.error('Error recording user entry:', error));
+}
+
 function loadUserData() {
     if (!user || !user.id) {
         console.error('User ID is not available');
@@ -42,11 +59,9 @@ function loadUserData() {
     }
 
     console.log(`Fetching user data for user ID: ${user.id}`);
+
     fetch(`https://9cf7-83-40-74-107.ngrok-free.app/user?user_id=${user.id}`)
-        .then(response => {
-            console.log('Response received');
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
             if (data.success) {
                 balance = data.user.balance;
@@ -184,10 +199,7 @@ function sendUpdate(event) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
-    }).then(response => {
-        console.log('Update response received');
-        return response.json();
-    })
+    }).then(response => response.json())
       .then(data => {
         console.log('Update response:', data);
       })
@@ -196,6 +208,8 @@ function sendUpdate(event) {
       });
 }
 
+// Загрузка данных пользователя и запись ID при входе в приложение
+enterApplication();
 loadUserData();
 updateEnergyBar();
 updateRefillButton();

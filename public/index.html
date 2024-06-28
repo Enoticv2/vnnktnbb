@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Clicker Game</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script> <!-- Подключение Telegram Web Apps SDK -->
+</head>
+<body>
+    <div id="content">
+        <div id="clicker-page" class="page active">
+            <div id="balance">0</div>
+            <div style="display: flex; align-items: center;">
+                <img id="clicker" src="img/iconbroke.jpg" alt="Clicker Icon">
+                <img id="new-icon" src="img/iconrich.jpg" alt="New Clicker Icon" style="display: none;">
+            </div>
+            <div id="energy-container">
+                <div id="energy-bar"></div>
+            </div>
+            <div id="energy-text">Energy: 100 / 100</div>
+            <button id="boosts-button" class="boosts-button">Boosts</button>
+        </div>
+        <div id="friends-page" class="page">
+            <div class="card">
+                <span>Invite your friends</span>
+                <button class="invite-button">Invite</button>
+            </div>
+            <div class="card">
+                <span>All invited friends</span>
+            </div>
+        </div>
+        <div id="bets-page" class="page">
+            <div class="container">
+                <div class="events">
+                    <h2>Ставки на игроков</h2>
+                    <div class="positions">
+                        <div class="forwards">
+                            <div class="position" data-position="leftForward">
+                                <img src="img/secret.png" alt="?" class="placeholder">
+                                <p>Левый нападающий</p>
+                            </div>
+                            <div class="position" data-position="centerForward">
+                                <img src="img/secret.png" alt="?" class="placeholder">
+                                <p>Центральный нападающий</p>
+                            </div>
+                            <div class="position" data-position="rightForward">
+                                <img src="img/secret.png" alt="?" class="placeholder">
+                                <p>Правый нападающий</p>
+                            </div>
+                        </div>
+                        <div class="defenders">
+                            <div class="position" data-position="leftDefense">
+                                <img src="img/secret.png" alt="?" class="placeholder">
+                                <p>Левый защитник</p>
+                            </div>
+                            <div class="position" data-position="rightDefense">
+                                <img src="img/secret.png" alt="?" class="placeholder">
+                                <p>Правый защитник</p>
+                            </div>
+                        </div>
+                        <div class="goalies">
+                            <div class="position" data-position="goalie">
+                                <img src="img/secret.png" alt="?" class="placeholder">
+                                <p>Вратарь</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <div id="playerSelectionModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>Выберите игрока</h2>
+                    <div id="playerCards"></div>
+                </div>
+            </div>
+        </div>
+        <div id="bonuses-page" class="page">
+            <div class="coming-soon">Coming soon</div>
+        </div>
+    </div>
+    
+    <div id="menu">
+        <img class="menu-icon" src="img/iconbroke.jpg" alt="Clicker" onclick="showPage('clicker-page')">
+        <img class="menu-icon" src="img/friends.png" alt="Friends" onclick="showPage('friends-page')">
+        <img class="menu-icon" src="img/bet.png" alt="Bets" onclick="showPage('bets-page')">
+        <img class="menu-icon" src="img/bonus.png" alt="Bonuses" onclick="showPage('bonuses-page')">
+    </div>
+
+    <div id="boosts-menu" class="boosts-menu">
+        <div class="boosts-menu-content">
+            <img id="refill-button" src="img/images.png" alt="Refill Energy">
+            <div class="refillbeer">Drink to get energy</div>
+            <div>
+                <span class="upgrade-cost" id="profit-upgrade-cost">Cost: 100</span>
+                <button class="upgrade-button" id="upgrade-profit-button">Upgrade Profit</button>
+            </div>
+            <div>
+                <span class="upgrade-cost" id="energy-upgrade-cost">Cost: 100</span>
+                <button class="upgrade-button" id="upgrade-energy-button">Upgrade Energy</button>
+            </div>
+        </div>
+    </div>
+    <script src="bet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
