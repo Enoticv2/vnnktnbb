@@ -109,6 +109,7 @@ bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
 
+  addUserOrUpdate(userId, 'Started the bot');
 
   const menu = {
     reply_markup: {
@@ -148,25 +149,19 @@ bot.on('callback_query', async (callbackQuery) => {
   }
 });
 
-
+bot.onText(/\/help/, (msg) => {
+  const chatId = msg.chat.id;
+  bot.sendMessage(chatId, 'Список команд:\n/start - Начало\n/help - Помощь\n/play - Играть\n/balance - Проверить баланс\n/energy - Проверить энергию');
+});
 
 bot.on('message', (msg) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
 
+  addUserOrUpdate(userId, msg.text);
 
   if (msg.text.startsWith('/')) return;
-
-  const menu = {
-    reply_markup: {
-      inline_keyboard: [
-        [{ text: 'Играть', callback_data: 'play' }],
-        [{ text: 'Баланс', callback_data: 'balance' }, { text: 'Энергия', callback_data: 'energy' }]
-      ]
-    }
-  };
-
-  bot.sendMessage(chatId, 'Привет! Я ваш бот. Выберите команду из меню.', menu);
+  bot.sendMessage(chatId, msg.text);
 });
 
 app.listen(port, () => {
