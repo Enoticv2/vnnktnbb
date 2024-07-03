@@ -21,6 +21,7 @@ window.onclick = function(event) {
     }
 }
 
+
 function showPlayerSelectionModal(position, button) {
     playerCardsContainer.innerHTML = ''; // Clear previous players
     var players = getPlayersByPosition(position);
@@ -57,7 +58,7 @@ function getPlayersByPosition(position) {
             { name: 'Hedman', image: 'img/NHL/D/hedman.png' },
             { name: 'Makar', image: 'img/NHL/D/Makar.png' },
             { name: 'Nikitin', image: 'img/NHL/D/Nikitin.png' },
-            { name: 'Tsulygin', image: 'img/KHL/D/tsulygin.png' },
+            { name: 'Tsulygin', image: 'img/KHL/D/tsulya.png' },
         ],
         rightDefense: [
             { name: 'Hedman', image: 'img/NHL/D/hedman.png' },
