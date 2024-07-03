@@ -136,7 +136,7 @@ bot.on('callback_query', async (callbackQuery) => {
 
   if (data === 'play') {
     const playUrl = 'https://t.me/FanHockeyBot/FanHockey';
-    bot.sendMessage(chatId, `You can play using the following link: ${playUrl}`);
+    bot.sendMessage(chatId, `You can play by clicking the following link: ${playUrl}`);
   } else if (data === 'balance') {
     const user = await User.findOne({ user_id: userId });
     if (user) {
