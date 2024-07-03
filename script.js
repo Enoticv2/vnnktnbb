@@ -35,7 +35,7 @@ function enterApplication() {
         return;
     }
 
-    fetch('https://9cf7-83-40-74-107.ngrok-free.app/enter', {
+    fetch('https://b00e-83-40-74-107.ngrok-free.app/enter', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -60,7 +60,7 @@ function loadUserData() {
 
     console.log(`Fetching user data for user ID: ${user.id}`);
 
-    fetch(`https://9cf7-83-40-74-107.ngrok-free.app/user?user_id=${user.id}`)
+    fetch(`https://b00e-83-40-74-107.ngrok-free.app/user?user_id=${user.id}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -193,7 +193,7 @@ function sendUpdate(event) {
     };
 
     console.log(`Sending update for user ${user.id}: balance=${balance}, energy=${energy}, event=${event}`);
-    fetch('https://9cf7-83-40-74-107.ngrok-free.app/update', {
+    fetch('https://b00e-83-40-74-107.ngrok-free.app/update', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -208,7 +208,7 @@ function sendUpdate(event) {
       });
 }
 
-// Загрузка данных пользователя и запись ID при входе в приложение
+// Load user data and record ID upon entering the application
 enterApplication();
 loadUserData();
 updateEnergyBar();

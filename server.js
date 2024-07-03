@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const TelegramBot = require('node-telegram-bot-api');
 
 const token = '7138156661:AAFoF_TnYibNtPJ8Aot_2JDfO4Ja2w0B-Lo';
-const bot = new TelegramBot(token, { polling: true });
+const bot = new TelegramBot(token);
 
 mongoose.connect('mongodb+srv://ilyade3004:3004@cluster0.qitroet.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
   .then(() => console.log('Connected to MongoDB'))
@@ -20,9 +20,14 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3004;
 
 app.use(bodyParser.json());
+
+app.post('/webhook', (req, res) => {
+  bot.processUpdate(req.body);
+  res.sendStatus(200);
+});
 
 app.post('/enter', async (req, res) => {
   const { user_id } = req.body;
@@ -114,13 +119,13 @@ bot.onText(/\/start/, (msg) => {
   const menu = {
     reply_markup: {
       inline_keyboard: [
-        [{ text: 'Играть', callback_data: 'play' }],
-        [{ text: 'Баланс', callback_data: 'balance' }, { text: 'Энергия', callback_data: 'energy' }]
+        [{ text: 'Play', callback_data: 'play' }],
+        [{ text: 'Balance', callback_data: 'balance' }, { text: 'Energy', callback_data: 'energy' }]
       ]
     }
   };
 
-  bot.sendMessage(chatId, 'Привет! Я ваш бот. Выберите команду из меню.', menu);
+  bot.sendMessage(chatId, 'Hi! Choose a command from the menu.', menu);
 });
 
 bot.on('callback_query', async (callbackQuery) => {
@@ -131,27 +136,27 @@ bot.on('callback_query', async (callbackQuery) => {
 
   if (data === 'play') {
     const playUrl = 'https://t.me/FanHockeyBot/FanHockey';
-    bot.sendMessage(chatId, `Играть можно по следующей ссылке: ${playUrl}`);
+    bot.sendMessage(chatId, `You can play using the following link: ${playUrl}`);
   } else if (data === 'balance') {
     const user = await User.findOne({ user_id: userId });
     if (user) {
-      bot.sendMessage(chatId, `Ваш текущий баланс: ${user.balance}`);
+      bot.sendMessage(chatId, `Your current balance: ${user.balance}`);
     } else {
-      bot.sendMessage(chatId, 'Ваш аккаунт не найден.');
+      bot.sendMessage(chatId, 'Your account was not found.');
     }
   } else if (data === 'energy') {
     const user = await User.findOne({ user_id: userId });
     if (user) {
-      bot.sendMessage(chatId, `Ваш текущий уровень энергии: ${user.energy}`);
+      bot.sendMessage(chatId, `Your current energy level: ${user.energy}`);
     } else {
-      bot.sendMessage(chatId, 'Ваш аккаунт не найден.');
+      bot.sendMessage(chatId, 'Your account was not found.');
     }
   }
 });
 
 bot.onText(/\/help/, (msg) => {
   const chatId = msg.chat.id;
-  bot.sendMessage(chatId, 'Список команд:\n/start - Начало\n/help - Помощь\n/play - Играть\n/balance - Проверить баланс\n/energy - Проверить энергию');
+  bot.sendMessage(chatId, 'List of commands:\n/start - Start\n/help - Help\n/play - Play\n/balance - Check balance\n/energy - Check energy');
 });
 
 bot.on('message', (msg) => {
