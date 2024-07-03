@@ -119,13 +119,13 @@ bot.onText(/\/start/, (msg) => {
   const menu = {
     reply_markup: {
       inline_keyboard: [
-        [{ text: 'Играть', callback_data: 'play' }],
-        [{ text: 'Баланс', callback_data: 'balance' }, { text: 'Энергия', callback_data: 'energy' }]
+        [{ text: 'Play', callback_data: 'play' }],
+        [{ text: 'Balance', callback_data: 'balance' }, { text: 'Energy', callback_data: 'energy' }]
       ]
     }
   };
 
-  bot.sendMessage(chatId, 'Hi! choose a command!', menu);
+  bot.sendMessage(chatId, 'Hi! Choose a command from the menu.', menu);
 });
 
 bot.on('callback_query', async (callbackQuery) => {
@@ -136,27 +136,27 @@ bot.on('callback_query', async (callbackQuery) => {
 
   if (data === 'play') {
     const playUrl = 'https://t.me/FanHockeyBot/FanHockey';
-    bot.sendMessage(chatId, `To play click the following link: ${playUrl}`);
+    bot.sendMessage(chatId, `You can play by clicking the following link: ${playUrl}`);
   } else if (data === 'balance') {
     const user = await User.findOne({ user_id: userId });
     if (user) {
-      bot.sendMessage(chatId, `Your balance: ${user.balance}`);
+      bot.sendMessage(chatId, `Your current balance: ${user.balance}`);
     } else {
-      bot.sendMessage(chatId, 'Ваш аккаунт не найден.');
+      bot.sendMessage(chatId, 'Your account was not found.');
     }
   } else if (data === 'energy') {
     const user = await User.findOne({ user_id: userId });
     if (user) {
-      bot.sendMessage(chatId, `Your energy: ${user.energy}`);
+      bot.sendMessage(chatId, `Your current energy level: ${user.energy}`);
     } else {
-      bot.sendMessage(chatId, 'Ваш аккаунт не найден.');
+      bot.sendMessage(chatId, 'Your account was not found.');
     }
   }
 });
 
 bot.onText(/\/help/, (msg) => {
   const chatId = msg.chat.id;
-  bot.sendMessage(chatId, 'Список команд:\n/start - Начало\n/help - Помощь\n/play - Играть\n/balance - Проверить баланс\n/energy - Проверить энергию');
+  bot.sendMessage(chatId, 'List of commands:\n/start - Start\n/help - Help\n/play - Play\n/balance - Check balance\n/energy - Check energy');
 });
 
 bot.on('message', (msg) => {
